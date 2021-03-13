@@ -1,0 +1,28 @@
+diff --git a/src/OpenDebugAD7/OpenDebug/Program.cs b/src/OpenDebugAD7/OpenDebug/Program.cs
+index f65710a..0eaaae7 100644
+--- a/src/OpenDebugAD7/OpenDebug/Program.cs
++++ b/src/OpenDebugAD7/OpenDebug/Program.cs
+@@ -144,7 +144,7 @@ namespace OpenDebug
+             {
+                 // stdin/stdout
+                 Console.Error.WriteLine("waiting for v8 protocol on stdin/stdout");
+-                if (Utilities.IsWindows())
++                if (Utilities.IsWindows() && Console.InputEncoding.CodePage == 65001)
+                 {
+                     // Avoid sending the BOM on Windows if the Beta Unicode feature is enabled in Windows 10
+                     Console.OutputEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+diff --git a/src/WindowsDebugLauncher/Program.cs b/src/WindowsDebugLauncher/Program.cs
+index 4e716b6..4f5d751 100644
+--- a/src/WindowsDebugLauncher/Program.cs
++++ b/src/WindowsDebugLauncher/Program.cs
+@@ -20,8 +20,10 @@ namespace WindowsDebugLauncher
+             parameters.PipeServer = "."; // Currently only supporting local pipe connections
+
+             // Avoid sending the BOM on Windows if the Beta Unicode feature is enabled in Windows 10
++            if (Console.InputEncoding.CodePage == 65001) {
+             Console.OutputEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+             Console.InputEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
++            }
+
+             foreach (var a in argv)
+             {

@@ -1,0 +1,29 @@
+name: Build
+on:
+  schedule:
+  - cron: "0 0 1 * *"
+  workflow_dispatch:
+  push:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: microsoft/MIEngine
+
+    - run: |
+        curl.exe -O https://raw.githubusercontent.com/imba-tjd/build-miengine/master/cp.patch;
+        git apply cp.patch;
+        rm cp.patch;
+
+    - run: |
+        cd src/WindowsDebugLauncher;
+        dotnet publish -c Desktop.Release
+
+    - uses: actions/upload-artifact@v2
+      with:
+        path: bin/Desktop.Release/drop/vscode/WindowsDebugLauncher.exe
+        name: WindowsDebugLauncher
